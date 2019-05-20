@@ -35,7 +35,57 @@ class DataTestingController extends Controller
      */
     public function store(Request $request)
     {
+        $totalPrecise = DataTraining::whereGraduation('TEPAT_WAKTU')->get()->count();
+
+        $totalLate = DataTraining::whereGraduation('TERLAMBAT')->get()->count();
+
+        //Gender
+
+        $totalGenderPrecise = DataTraining::whereGraduation('TEPAT_WAKTU')->whereGender($request->gender)->get()->count()/$totalPrecise;
+
+        $totalGenderLate = DataTraining::whereGraduation('TERLAMBAT')->whereGender($request->gender)->get()->count()/$totalLate;
         //
+
+        //dwelling place
+
+        $totalDwellingPlacePrecise = DataTraining::whereGraduation('TEPAT_WAKTU')->whereDwellingPlace($request->dwelling_place)->get()->count()/$totalPrecise;
+
+        $totalDwellingPlaceLate = DataTraining::whereGraduation('TERLAMBAT')->whereDwellingPlace($request->dwelling_place)->get()->count()/$totalLate;
+
+        //
+
+        //High School Exam
+
+        //need to classified to high, mid, and High Score in store dataTraining
+
+        $totalHighSchoolScorePrecise = DataTraining::whereGraduation('TEPAT_WAKTU')->whereHighSchoolScore($request->high_school_score)->get()->count()/$totalPrecise;
+
+        $totalHighSchoolScoreLate = DataTraining::whereGraduation('TERLAMBAT')->whereHighSchoolScore($request->high_school_score)->get()->count()/$totalLate;
+
+        //
+        //parents Income
+
+        $totalParentsIncomePrecise = DataTraining::whereGraduation('TEPAT_WAKTU')->whereParentsIncome($request->parents_income)->get()->count()/$totalPrecise;
+
+        $totalParentsIncomeLate = DataTraining::whereGraduation('TERLAMBAT')->whereParentsIncome($request->parents_income)->get()->count()/$totalLate;
+
+        //number of parents dependents
+        $totalParentsDependentsPrecise = DataTraining::whereGraduation('TEPAT_WAKTU')->whereDependents($request->parents_dependents)->get()->count()/$totalPrecise;
+
+        $totalParentsDependentsLate = DataTraining::whereGraduation('TERLAMBAT')->whereDependents($request->parents_dependents)->get()->count()/$totalLate;
+
+        //
+
+        $onTimeGrad = $totalGenderPrecise * $totalDwellingPlacePrecise * $totalHighSchoolScorePrecise * $totalParentsIncomePrecise * $totalParentsDependentsPrecise;
+
+        $lateGrad = $totalGenderLate * $totalDwellingPlaceLate * $totalHighSchoolScoreLate * $totalParentsIncomeLate * $totalParentsDependentsLate;
+
+
+        if ($onTimeGrad > $lateGrad || $onTimeGrad == $lateGrad) {
+            return redirect('view')->with('message', 'Lulus Tepat Waktu');
+        } elseif ($onTimeGrad < $lateGrad) {
+            return redirect('view')->with('message', 'Lulus Terlambat');
+        }
     }
 
     /**
