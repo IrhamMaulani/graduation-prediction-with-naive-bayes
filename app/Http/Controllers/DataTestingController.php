@@ -82,12 +82,16 @@ class DataTestingController extends Controller
         $lateGrad = $totalGenderLate/$totalLate * $totalDwellingPlaceLate/$totalLate * $totalHighSchoolScoreLate/$totalLate
                     * $totalParentsIncomeLate/$totalLate * $totalParentsDependentsLate/$totalLate;
 
+    
+        
 
         if ($onTimeGrad > $lateGrad || $onTimeGrad == $lateGrad) {
             return redirect('view')->with('message', 'Lulus Tepat Waktu');
         } elseif ($onTimeGrad < $lateGrad) {
             return redirect('view')->with('message', 'Lulus Terlambat');
         }
+
+        DataTesting::create($request->all());
     }
 
     /**
