@@ -41,16 +41,16 @@ class DataTestingController extends Controller
 
         //Gender
 
-        $totalGenderPrecise = DataTraining::whereGraduation('TEPAT_WAKTU')->whereGender($request->gender)->get()->count()/$totalPrecise;
+        $totalGenderPrecise = DataTraining::whereGraduation('TEPAT_WAKTU')->whereGender($request->gender)->get()->count();
 
-        $totalGenderLate = DataTraining::whereGraduation('TERLAMBAT')->whereGender($request->gender)->get()->count()/$totalLate;
+        $totalGenderLate = DataTraining::whereGraduation('TERLAMBAT')->whereGender($request->gender)->get()->count();
         //
 
         //dwelling place
 
-        $totalDwellingPlacePrecise = DataTraining::whereGraduation('TEPAT_WAKTU')->whereDwellingPlace($request->dwelling_place)->get()->count()/$totalPrecise;
+        $totalDwellingPlacePrecise = DataTraining::whereGraduation('TEPAT_WAKTU')->whereDwellingPlace($request->dwelling_place)->get()->count();
 
-        $totalDwellingPlaceLate = DataTraining::whereGraduation('TERLAMBAT')->whereDwellingPlace($request->dwelling_place)->get()->count()/$totalLate;
+        $totalDwellingPlaceLate = DataTraining::whereGraduation('TERLAMBAT')->whereDwellingPlace($request->dwelling_place)->get()->count();
 
         //
 
@@ -58,27 +58,29 @@ class DataTestingController extends Controller
 
         //need to classified to high, mid, and High Score in store dataTraining
 
-        $totalHighSchoolScorePrecise = DataTraining::whereGraduation('TEPAT_WAKTU')->whereHighSchoolScore($request->high_school_score)->get()->count()/$totalPrecise;
+        $totalHighSchoolScorePrecise = DataTraining::whereGraduation('TEPAT_WAKTU')->whereHighSchoolScore($request->high_school_score)->get()->count();
 
-        $totalHighSchoolScoreLate = DataTraining::whereGraduation('TERLAMBAT')->whereHighSchoolScore($request->high_school_score)->get()->count()/$totalLate;
+        $totalHighSchoolScoreLate = DataTraining::whereGraduation('TERLAMBAT')->whereHighSchoolScore($request->high_school_score)->get()->count();
 
         //
         //parents Income
 
-        $totalParentsIncomePrecise = DataTraining::whereGraduation('TEPAT_WAKTU')->whereParentsIncome($request->parents_income)->get()->count()/$totalPrecise;
+        $totalParentsIncomePrecise = DataTraining::whereGraduation('TEPAT_WAKTU')->whereParentsIncome($request->parents_income)->get()->count();
 
-        $totalParentsIncomeLate = DataTraining::whereGraduation('TERLAMBAT')->whereParentsIncome($request->parents_income)->get()->count()/$totalLate;
+        $totalParentsIncomeLate = DataTraining::whereGraduation('TERLAMBAT')->whereParentsIncome($request->parents_income)->get()->count();
 
         //number of parents dependents
-        $totalParentsDependentsPrecise = DataTraining::whereGraduation('TEPAT_WAKTU')->whereDependents($request->parents_dependents)->get()->count()/$totalPrecise;
+        $totalParentsDependentsPrecise = DataTraining::whereGraduation('TEPAT_WAKTU')->whereDependents($request->parents_dependents)->get()->count();
 
-        $totalParentsDependentsLate = DataTraining::whereGraduation('TERLAMBAT')->whereDependents($request->parents_dependents)->get()->count()/$totalLate;
+        $totalParentsDependentsLate = DataTraining::whereGraduation('TERLAMBAT')->whereDependents($request->parents_dependents)->get()->count();
 
         //
 
-        $onTimeGrad = $totalGenderPrecise * $totalDwellingPlacePrecise * $totalHighSchoolScorePrecise * $totalParentsIncomePrecise * $totalParentsDependentsPrecise;
+        $onTimeGrad = $totalGenderPrecise/$totalPrecise * $totalDwellingPlacePrecise/$totalPrecise * $totalHighSchoolScorePrecise/$totalPrecise
+                    * $totalParentsIncomePrecise/$totalPrecise * $totalParentsDependentsPrecise/$totalPrecise;
 
-        $lateGrad = $totalGenderLate * $totalDwellingPlaceLate * $totalHighSchoolScoreLate * $totalParentsIncomeLate * $totalParentsDependentsLate;
+        $lateGrad = $totalGenderLate/$totalLate * $totalDwellingPlaceLate/$totalLate * $totalHighSchoolScoreLate/$totalLate
+                    * $totalParentsIncomeLate/$totalLate * $totalParentsDependentsLate/$totalLate;
 
 
         if ($onTimeGrad > $lateGrad || $onTimeGrad == $lateGrad) {
