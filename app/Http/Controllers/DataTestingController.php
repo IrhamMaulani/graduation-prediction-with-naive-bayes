@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Student;
 use App\DataTesting;
 use Illuminate\Http\Request;
 
@@ -35,15 +36,32 @@ class DataTestingController extends Controller
      */
     public function store(Request $request)
     {
+
+        $studentHighScoolGrade = Student::convertHighSchoolGrade($request->high_school_score);
+
+        $grade = Student::convertGrade($request->grade);
+
+        $salary = Student::convertSalary($request->salary);
+        
         $totalPrecise = DataTraining::whereGraduation('TEPAT_WAKTU')->get()->count();
 
         $totalLate = DataTraining::whereGraduation('TERLAMBAT')->get()->count();
+
+        $total = $totalPrecise + $totalLate;
 
         //Gender
 
         $totalGenderPrecise = DataTraining::whereGraduation('TEPAT_WAKTU')->whereGender($request->gender)->get()->count();
 
         $totalGenderLate = DataTraining::whereGraduation('TERLAMBAT')->whereGender($request->gender)->get()->count();
+        //
+
+        //Grade
+
+        $totalGradePrecise = DataTraining::whereGraduation('TEPAT_WAKTU')->whereGender($grade)->get()->count();
+
+        $totalGradeLate = DataTraining::whereGraduation('TERLAMBAT')->whereGender($grade)->get()->count();
+
         //
 
         //dwelling place
@@ -58,34 +76,30 @@ class DataTestingController extends Controller
 
         //need to classified to high, mid, and High Score in store dataTraining
 
-        $totalHighSchoolScorePrecise = DataTraining::whereGraduation('TEPAT_WAKTU')->whereHighSchoolScore($request->high_school_score)->get()->count();
+        $totalHighSchoolScorePrecise = DataTraining::whereGraduation('TEPAT_WAKTU')
+        ->whereHighSchoolScore($studentHighScoolGrade)->get()->count();
 
-        $totalHighSchoolScoreLate = DataTraining::whereGraduation('TERLAMBAT')->whereHighSchoolScore($request->high_school_score)->get()->count();
+        $totalHighSchoolScoreLate = DataTraining::whereGraduation('TERLAMBAT')
+        ->whereHighSchoolScore($studentHighScoolGrade)->get()->count();
 
         //
         //parents Income
 
-        $totalParentsIncomePrecise = DataTraining::whereGraduation('TEPAT_WAKTU')->whereParentsIncome($request->parents_income)->get()->count();
+        $totalParentsIncomePrecise = DataTraining::whereGraduation('TEPAT_WAKTU')->whereParentsIncome($salary)->get()->count();
 
-        $totalParentsIncomeLate = DataTraining::whereGraduation('TERLAMBAT')->whereParentsIncome($request->parents_income)->get()->count();
+        $totalParentsIncomeLate = DataTraining::whereGraduation('TERLAMBAT')->whereParentsIncome($salary)->get()->count();
 
-        //number of parents dependents
-        $totalParentsDependentsPrecise = DataTraining::whereGraduation('TEPAT_WAKTU')->whereDependents($request->parents_dependents)->get()->count();
 
-        $totalParentsDependentsLate = DataTraining::whereGraduation('TERLAMBAT')->whereDependents($request->parents_dependents)->get()->count();
+        $onTimeGrad = $totalPrecise/$total * $totalGenderPrecise/$totalPrecise * $totalGradePrecise/$totalPrecise * $totalDwellingPlacePrecise/$totalPrecise 
+                    * $totalHighSchoolScorePrecise/$totalPrecise * $totalParentsIncomePrecise/$totalPrecise ;
 
-        //
-
-        $onTimeGrad = $totalGenderPrecise/$totalPrecise * $totalDwellingPlacePrecise/$totalPrecise * $totalHighSchoolScorePrecise/$totalPrecise
-                    * $totalParentsIncomePrecise/$totalPrecise * $totalParentsDependentsPrecise/$totalPrecise;
-
-        $lateGrad = $totalGenderLate/$totalLate * $totalDwellingPlaceLate/$totalLate * $totalHighSchoolScoreLate/$totalLate
-                    * $totalParentsIncomeLate/$totalLate * $totalParentsDependentsLate/$totalLate;
+        $lateGrad = $totalLate/$total * $totalGenderLate/$totalLate * $totalGradeLate/ $totalLate * $totalDwellingPlaceLate/$totalLate * $totalHighSchoolScoreLate/$totalLate
+                    * $totalParentsIncomeLate/$totalLate;
 
     
         
 
-        if ($onTimeGrad > $lateGrad || $onTimeGrad == $lateGrad) {
+        if ($onTimeGrad >= $lateGrad ) {
             return redirect('view')->with('message', 'Lulus Tepat Waktu');
         } elseif ($onTimeGrad < $lateGrad) {
             return redirect('view')->with('message', 'Lulus Terlambat');
