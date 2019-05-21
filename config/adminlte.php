@@ -120,6 +120,12 @@ return [
             'url'  => 'admin/data-testing',
             'icon' => 'folder',
         ],
+
+           [
+            'text' => 'Data Target',
+            'url'  => 'admin/data-testing',
+            'icon' => 'bullseye',
+        ],
         
     ],
 

@@ -13,3 +13,8 @@
 .mr-1 {
     margin-right: 15px;
 }
+
+.center {
+    display: flex;
+    justify-content: center;
+}

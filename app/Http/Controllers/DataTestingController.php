@@ -15,7 +15,9 @@ class DataTestingController extends Controller
      */
     public function index()
     {
-        return view('datatesting.index');
+        $studentHighScoolGrade = Student::convertSalaryFormat("> 5.000.000 - 6.000.000");
+
+        return view('datatesting.index', ['studentHighScoolGrade' => $studentHighScoolGrade]);
     }
 
     /**
@@ -36,76 +38,30 @@ class DataTestingController extends Controller
      */
     public function store(Request $request)
     {
-
-        $studentHighScoolGrade = Student::convertHighSchoolGrade($request->high_school_score);
+        $highSchoolGradeMean = Student::convertHighSchoolGrade($request->high_school_score);
 
         $grade = Student::convertGrade($request->grade);
 
         $salary = Student::convertSalary($request->salary);
         
-        $totalPrecise = DataTraining::whereGraduation('TEPAT_WAKTU')->get()->count();
+        $gradPrediction = NaiveBayes::calculate($highSchoolGradeMean, $grade, $salary, $request->gender, $request->dwelling_place);
 
-        $totalLate = DataTraining::whereGraduation('TERLAMBAT')->get()->count();
+        $dataTesting = new DataTesting([
+            'student_id' => $request->student_id,
+            'gender'    => $request->gender,
+            'dwelling_place' => $request->dwelling_place,
+            'grade'         =>$grade,
+            'high_school_grade_Mean' => $highSchoolGradeMean,
+            'parents_income' => $request->salary,
+            'grad_status'   => $request->grad_status,
+            'grad_status_prediction' =>$gradPrediction
+        ]);
 
-        $total = $totalPrecise + $totalLate;
-
-        //Gender
-
-        $totalGenderPrecise = DataTraining::whereGraduation('TEPAT_WAKTU')->whereGender($request->gender)->get()->count();
-
-        $totalGenderLate = DataTraining::whereGraduation('TERLAMBAT')->whereGender($request->gender)->get()->count();
-        //
-
-        //Grade
-
-        $totalGradePrecise = DataTraining::whereGraduation('TEPAT_WAKTU')->whereGender($grade)->get()->count();
-
-        $totalGradeLate = DataTraining::whereGraduation('TERLAMBAT')->whereGender($grade)->get()->count();
-
-        //
-
-        //dwelling place
-
-        $totalDwellingPlacePrecise = DataTraining::whereGraduation('TEPAT_WAKTU')->whereDwellingPlace($request->dwelling_place)->get()->count();
-
-        $totalDwellingPlaceLate = DataTraining::whereGraduation('TERLAMBAT')->whereDwellingPlace($request->dwelling_place)->get()->count();
-
-        //
-
-        //High School Exam
-
-        //need to classified to high, mid, and High Score in store dataTraining
-
-        $totalHighSchoolScorePrecise = DataTraining::whereGraduation('TEPAT_WAKTU')
-        ->whereHighSchoolScore($studentHighScoolGrade)->get()->count();
-
-        $totalHighSchoolScoreLate = DataTraining::whereGraduation('TERLAMBAT')
-        ->whereHighSchoolScore($studentHighScoolGrade)->get()->count();
-
-        //
-        //parents Income
-
-        $totalParentsIncomePrecise = DataTraining::whereGraduation('TEPAT_WAKTU')->whereParentsIncome($salary)->get()->count();
-
-        $totalParentsIncomeLate = DataTraining::whereGraduation('TERLAMBAT')->whereParentsIncome($salary)->get()->count();
-
-
-        $onTimeGrad = $totalPrecise/$total * $totalGenderPrecise/$totalPrecise * $totalGradePrecise/$totalPrecise * $totalDwellingPlacePrecise/$totalPrecise 
-                    * $totalHighSchoolScorePrecise/$totalPrecise * $totalParentsIncomePrecise/$totalPrecise ;
-
-        $lateGrad = $totalLate/$total * $totalGenderLate/$totalLate * $totalGradeLate/ $totalLate * $totalDwellingPlaceLate/$totalLate * $totalHighSchoolScoreLate/$totalLate
-                    * $totalParentsIncomeLate/$totalLate;
-
-    
-        
-
-        if ($onTimeGrad >= $lateGrad ) {
-            return redirect('view')->with('message', 'Lulus Tepat Waktu');
-        } elseif ($onTimeGrad < $lateGrad) {
-            return redirect('view')->with('message', 'Lulus Terlambat');
+        if ($dataTesting->save()) {
+            return "OK";
+        } else {
+            return "NO";
         }
-
-        DataTesting::create($request->all());
     }
 
     /**

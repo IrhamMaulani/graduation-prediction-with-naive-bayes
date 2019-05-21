@@ -12,7 +12,12 @@
 */
 
  Route::prefix('admin')->group(function () {
-     Route::get('/data-training', 'DataTrainingController@index');
+     Route::prefix('data-training')->group(function () {
+         Route::get('/', 'DataTrainingController@index');
+         Route::get('/to-json', 'DataTrainingController@toJson');
+         Route::delete('/{id}', 'DataTrainingController@destroy');
+         Route::post('/import', 'DataTrainingController@import')->name('data-training-import');
+     });
 
      Route::get('/data-testing', 'DataTestingController@index');
  });

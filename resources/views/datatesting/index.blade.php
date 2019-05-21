@@ -29,20 +29,22 @@
 
             
 
-    <h1 class="ml-1">List Data Testing</h1>
+    <h2 class="ml-1">List Data Testing</h2>
+
+    {{$studentHighScoolGrade}}
     <div class="container-fluid">
         <table class="table table-striped table-bordered"  id="tablePasien" style="width:100%;">
             <thead>
               <tr>
                   
                 <th>NIM</th>
-                <th>IPK</th>
                 <th>Jenis Kelamin</th>
                 <th>Status Tempat Tinggal</th>
-                <th>Nilai UN</th>
+                <th>IPK</th>
+                <th>Rata-rata Nilai UN</th>
                 <th>Penghasilan Ortu</th>
-                <th>Jumlah Tanggungan Ortu</th>
-                <th>Keterangan</th>
+                <th>Kelulusan</th>
+                <th>Prediksi Kelulusan</th>
                 <th>Lihat Data</th>
                 <th>Edit Data</th>
 
