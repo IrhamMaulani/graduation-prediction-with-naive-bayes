@@ -8,7 +8,7 @@ class Student extends Model
 {
     public static function convertGrade($grade)
     {
-        if ($grade >= 4.00) {
+        if ($grade >3.75  && $grade <= 4.00) {
             return "A";
         } elseif ($grade >= 3.75 && $grade < 4.00) {
             return "A-";
@@ -60,9 +60,10 @@ class Student extends Model
 
     public static function convertSalaryFormat($salary)
     {
-        if ($salary == "> 5.000.000 - 6.000.000") {
+        if ($salary == "> 5.000.000 - 6.000.000" || $salary == "> 15.000.000" || $salary == "> 6.000.000 - 7.000.000" || $salary == "> 10.000.000 - 15.000.000"
+         || $salary == "> 10.000.000 - 15.000.000" || $salary == "> 9.000.000 - 10.000.000") {
             return 5;
-        } elseif ($salary == "> 3.000.000 - 4.000.000") {
+        } elseif ($salary == "> 3.000.000 - 4.000.000" || $salary == "> 4.000.000 - 5.000.000") {
             return 4;
         } elseif ($salary == "> 2.000.000 - 3.000.000") {
             return 3;
