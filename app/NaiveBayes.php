@@ -3,34 +3,34 @@ namespace App;
 
 class NaiveBayes
 {
-    public static function calculate($HighSchoolGradeMean, $grade, $salary, $gender, $dwellingPlace)
+    public static function calculate($highSchoolGradeMean, $grade, $salary, $gender, $dwellingPlace, $batch)
     {
-        $totalPrecise = DataTraining::whereGraduation('TEPAT_WAKTU')->get()->count();
+        $totalPrecise = DataTraining::whereBatch($batch)->whereGradStatus('TEPAT_WAKTU')->get()->count();
 
-        $totalLate = DataTraining::whereGraduation('TERLAMBAT')->get()->count();
+        $totalLate = DataTraining::whereBatch($batch)->whereGradStatus('TERLAMBAT')->get()->count();
 
-        $total = $totalPrecise + $totalLate;
+        $total =  DataTraining::whereBatch($batch)->get()->count();
 
         //Gender
 
-        $totalGenderPrecise = DataTraining::whereGraduation('TEPAT_WAKTU')->whereGender($gender)->get()->count();
+        $totalGenderPrecise = DataTraining::whereBatch($batch)->whereGradStatus('TEPAT_WAKTU')->whereGender($gender)->get()->count();
 
-        $totalGenderLate = DataTraining::whereGraduation('TERLAMBAT')->whereGender($gender)->get()->count();
+        $totalGenderLate = DataTraining::whereBatch($batch)->whereGradStatus('TERLAMBAT')->whereGender($gender)->get()->count();
         //
 
         //Grade
 
-        $totalGradePrecise = DataTraining::whereGraduation('TEPAT_WAKTU')->whereGender($grade)->get()->count();
+        $totalGradePrecise = DataTraining::whereBatch($batch)->whereGradStatus('TEPAT_WAKTU')->whereGrade($grade)->get()->count();
 
-        $totalGradeLate = DataTraining::whereGraduation('TERLAMBAT')->whereGender($grade)->get()->count();
+        $totalGradeLate = DataTraining::whereBatch($batch)->whereGradStatus('TERLAMBAT')->whereGrade($grade)->get()->count();
 
         //
 
         //dwelling place
 
-        $totalDwellingPlacePrecise = DataTraining::whereGraduation('TEPAT_WAKTU')->whereDwellingPlace($dwellingPlace)->get()->count();
+        $totalDwellingPlacePrecise = DataTraining::whereBatch($batch)->whereGradStatus('TEPAT_WAKTU')->whereDwellingPlace($dwellingPlace)->get()->count();
 
-        $totalDwellingPlaceLate = DataTraining::whereGraduation('TERLAMBAT')->whereDwellingPlace($dwellingPlace)->get()->count();
+        $totalDwellingPlaceLate = DataTraining::whereBatch($batch)->whereGradStatus('TERLAMBAT')->whereDwellingPlace($dwellingPlace)->get()->count();
 
         //
 
@@ -38,38 +38,66 @@ class NaiveBayes
 
         //need to classified to high, mid, and High Score in store dataTraining
 
-        $totalHighSchoolScorePrecise = DataTraining::whereGraduation('TEPAT_WAKTU')
-        ->whereHighSchoolScore($HighSchoolGradeMean)->get()->count();
+        $totalHighSchoolScorePrecise = DataTraining::whereBatch($batch)->whereGradStatus('TEPAT_WAKTU')
+        ->whereHighSchoolGradeMean($highSchoolGradeMean)->get()->count();
 
-        $totalHighSchoolScoreLate = DataTraining::whereGraduation('TERLAMBAT')
-        ->whereHighSchoolScore($HighSchoolGradeMean)->get()->count();
+        $totalHighSchoolScoreLate = DataTraining::whereBatch($batch)->whereGradStatus('TERLAMBAT')
+        ->whereHighSchoolGradeMean($highSchoolGradeMean)->get()->count();
 
         //
         //parents Income
 
-        $totalParentsIncomePrecise = DataTraining::whereGraduation('TEPAT_WAKTU')->whereParentsIncome($salary)->get()->count();
+        $totalParentsIncomePrecise = DataTraining::whereBatch($batch)->whereGradStatus('TEPAT_WAKTU')->whereParentsIncome($salary)->get()->count();
 
-        $totalParentsIncomeLate = DataTraining::whereGraduation('TERLAMBAT')->whereParentsIncome($salary)->get()->count();
+        $totalParentsIncomeLate = DataTraining::whereBatch($batch)->whereGradStatus('TERLAMBAT')->whereParentsIncome($salary)->get()->count();
 
 
-        $onTimeGrad = $totalPrecise/$total *
-                      $totalGenderPrecise + 1 /$totalPrecise + 2 *
-                      $totalGradePrecise + 1/$totalPrecise + 10 *
-                      $totalDwellingPlacePrecise + 1 / $totalPrecise + 6 *
-                      $totalHighSchoolScorePrecise + 1 /$totalPrecise +3 *
-                      $totalParentsIncomePrecise+ 1/ $totalPrecise + 5 ;
+        $onTimeGrad = 0;
+        $lateGrad = 0;
 
-        $lateGrad = $totalLate/$total *
-                    $totalGenderLate + 1 /$totalLate + 2 *
-                    $totalGradeLate + 1 / $totalLate + 10 *
-                    $totalDwellingPlaceLate + 1 /$totalLate + 6 *
-                    $totalHighSchoolScoreLate + 1 /$totalLate + 3 *
-                    $totalParentsIncomeLate + 1/$totalLate + 5;
+        $genderPrecise =  (($totalGenderPrecise + 1) /($totalPrecise + 2));
+
+        $genderLate = (($totalGenderLate + 1) / ($totalLate + 2));
+
+        $gradePrecise = (($totalGradePrecise + 1)/($totalPrecise + 10));
+
+        $gradeLate = (($totalGradeLate + 1) / ($totalLate + 10));
+
+        $dwellingPlacePrecise = (($totalDwellingPlacePrecise + 1)/ ($totalPrecise + 6));
+
+        $dwellingPlaceLate =  (($totalDwellingPlaceLate + 1) /($totalLate + 6));
+
+        $highSchoolGradePrecise = (($totalHighSchoolScorePrecise + 1) / ($totalPrecise +3));
+
+        $highSchoolGradeLate = (($totalHighSchoolScoreLate + 1) /($totalLate + 3));
+
+        $parentsIncomePrecise =  (($totalParentsIncomePrecise+ 1)/ ($totalPrecise + 5));
+
+        $parentsIncomeLate =  (($totalParentsIncomeLate + 1)/($totalLate + 5));
+
+        
+        $onTimeGrad = $genderPrecise * $gradePrecise* $dwellingPlacePrecise* $highSchoolGradePrecise * $parentsIncomePrecise;
+
+        $onTimeGrad = number_format((float) $onTimeGrad * ($totalPrecise/$total), 5, '.', '');
+
+        
+       
+
+        $lateGrad =$genderLate*$gradeLate*$dwellingPlaceLate*$highSchoolGradeLate*$parentsIncomeLate;
+
+        $lateGrad = number_format((float)$lateGrad * ($totalLate/$total), 5, '.', '');
+
+        // return response()->json($totalPrecise . $totalLate);
+
+        // exit();
+
+        
+
 
         if ($onTimeGrad >= $lateGrad) {
-            return "TEPAT_WAKTU";
+            return  ['value1'=> 'TEPAT_WAKTU', 'value2' =>$onTimeGrad, 'value3' => $lateGrad];
         } elseif ($onTimeGrad < $lateGrad) {
-            return "TERLAMBAT";
+            return  ['value1'=> 'TERLAMBAT'  , 'value2' =>$onTimeGrad, 'value3' => $lateGrad];
         }
     }
 
@@ -78,8 +106,31 @@ class NaiveBayes
     //     return $trueOnTime + $trueLate / $totalData;
     // }
 
-    public static function calculateAccuracy($totalData, $trueOnTime, $falseOnTime, $trueLate, $falseLate)
+    // public static function calculateConfusionMatrix($totalData, $trueOnTime, $falseOnTime, $trueLate, $falseLate)
+    // {
+    //     $precision = NaiveBayes::calculatePrecision($trueOnTime, $falseOnTime);
+
+    //     $recall = NaiveBayes::calculateRecall($trueOnTime, $falseLate);
+
+    //     $accuracy = NaiveBayes::calculateAccuracy($totalData, $trueOnTime, $trueLate);
+
+    //     return ['precision' => $precision, 'recall' => $recall, 'accuracy' => $accuracy];
+    // }
+
+
+    public static function calculatePrecision($trueOnTime, $falseOnTime)
     {
-        return number_format($trueOnTime + $trueLate / $totalData * 100, 2) . '%';
+        return number_format($trueOnTime / ($trueOnTime + $falseOnTime) * 100, 2) . '%';
+    }
+    
+
+    public static function calculateRecall($trueOnTime, $falseLate)
+    {
+        return number_format($trueOnTime / ($trueOnTime + $falseLate)  * 100, 2) . '%';
+    }
+
+    public static function calculateAccuracy($totalData, $trueOnTime, $trueLate)
+    {
+        return number_format(($trueOnTime + $trueLate) / $totalData * 100, 2) . '%';
     }
 }
