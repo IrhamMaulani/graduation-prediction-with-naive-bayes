@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Data Training')
+@section('title', 'Akurasi')
 
 @section('content_header')
 
@@ -9,7 +9,7 @@
 
   <ol class="breadcrumb">
     <li><a href="/admin/data-training"><i class="fa fa-dashboard"></i> Home</a></li>
-    <li class="active">Data Training</li>
+    <li class="active">Akurasi</li>
   </ol>
     
 @stop
@@ -23,19 +23,16 @@
 
             <div class="box box-light">
 
-                    <button type="button" id="import" class="btn btn-success pull-right mt-1 mr-1">Import Dari Excel</button>
-
-                {{-- <button type="button" class="btn btn-primary pull-right mt-1 mr-1">Add New Data</button> --}}
 
             
 
-    <h1 class="ml-1">List Data Training</h1>
+    <h1 class="ml-1">Data Target</h1>
     <div class="container-fluid">
         <table class="table table-striped table-bordered"  id="table-training" style="width:100%;">
             <thead>
               <tr>
                   
-                 <th>NIM</th>
+                <th>NIM</th>
                 <th>Jenis Kelamin</th>
                 <th>Status Tempat Tinggal</th>
                 <th>IPK</th>
@@ -43,8 +40,6 @@
                 <th>Penghasilan Ortu</th>
                 <th>Kelulusan</th>
                 <th>Data Ke -</th>
-                <th>Lihat Data</th>
-
               </tr>
             </thead>
            
@@ -57,37 +52,6 @@
 
 
     </div>
-
-
-
-       <!-- Modal -->
-  <div class="modal fade " id="myModal" role="dialog">
-      <div class="modal-dialog modal-lg">
-      
-        <!-- Modal content-->
-        <div class="modal-content ">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h4 class="modal-title">Upload Data Excel</h4>
-          </div>
-          <div class="modal-body">
-
-              <form action="{{ route('data-training-import') }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                <input type="file" name="file" class="form-control">
-                <br>
-                <button class="btn btn-primary">Import Data</button>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          </div>
-        </div>
-        
-      </div>
-    </div>
-
-    {{-- modal --}}
 
 
 
@@ -126,11 +90,11 @@ $.ajaxSetup({
 
 $(document).ready(function () {
 
-    var table =$('#table-training').DataTable( {
+    // var table =$('#table-training').DataTable( {
 
-       "order": [[ 7, "asc" ]],
-        dom: 'Blfrtip',
-        buttons: [
+    //    "order": [[ 0, "asc" ]],
+    //     dom: 'Blfrtip',
+    //     buttons: [
             // {
 
             //     extend: 'print',
@@ -176,54 +140,49 @@ $(document).ready(function () {
             // }
            
 
-        ],
-     "ajax": "data-training/to-json",
-        "columns": [
-            { data: 'student_id' },
-            { data : 'gender' },
-            { data : 'dwelling_place' },
-            { data : 'grade' },
-            { data : 'high_school_grade_mean' },
-            { data : 'parents_income' },
-            { data : 'grad_status' },
-            { data : 'batch' },
-            {"defaultContent": "<button class='btn-block btn btn-danger delete-data center col-centered'>Hapus Data!</button>"}
-        ],
+//         ],
+//      "ajax": "akurasi/to-json",
+//         "columns": [
+//             { data: 'batch' },
+//             { data : 'accuracy_data' },
+//             { data : 'recall_data' },
+//             { data : 'precision_data' }
+//         ],
         
-    } );
+//     } );
 
-    // $('#tablePasien tbody').on( 'click', '.lihat-data', function () {
-    //     var data = table.row( $(this).parents('tr') ).data();
+//     // $('#tablePasien tbody').on( 'click', '.lihat-data', function () {
+//     //     var data = table.row( $(this).parents('tr') ).data();
 
-    //     $(".lihat-data").attr("href", "pasien/detailpasien=" +data.id);
+//     //     $(".lihat-data").attr("href", "pasien/detailpasien=" +data.id);
         
-    //     console.log(data);
-    // } );
+//     //     console.log(data);
+//     // } );
 
 
-    $('#table-training tbody').on( 'click', '.delete-data', function () {
-        var data = table.row( $(this).parents('tr') ).data();
+//     $('#table-training tbody').on( 'click', '.delete-data', function () {
+//         var data = table.row( $(this).parents('tr') ).data();
 
-        var confirmation = confirm("Data akan di hapus permanen.Apakah anda ingin melanjutkan?");
+//         var confirmation = confirm("Data akan di hapus permanen.Apakah anda ingin melanjutkan?");
 
-        if (confirmation) {
-            $.ajax({
-                method: "POST",
-                url: window.location.href + "/" + data.id,
-                data: { 
-                      _method     :     "delete"       
-                 }    
-              })
-                .done(function( data ) {
-                    alert("Data Berhasil Di Hapus");
-                    $('#table-training').DataTable().ajax.reload();  
-                });
+//         if (confirmation) {
+//             $.ajax({
+//                 method: "POST",
+//                 url: window.location.href + "/" + data.id,
+//                 data: { 
+//                       _method     :     "delete"       
+//                  }    
+//               })
+//                 .done(function( data ) {
+//                     alert("Data Berhasil Di Hapus");
+//                     $('#table-training').DataTable().ajax.reload();  
+//                 });
                
-           }
+//            }
        
-    } );
+//     } );
 
-});
+// });
 
 
 

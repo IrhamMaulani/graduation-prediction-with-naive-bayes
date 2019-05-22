@@ -10,8 +10,20 @@
     margin-left: 15px;
 }
 
+.ml-2 {
+    margin-left: 30px;
+}
+
 .mr-1 {
     margin-right: 15px;
+}
+
+.mr-2 {
+    margin-left: 30px;
+}
+
+.mb-1 {
+    margin-bottom: 15px;
 }
 
 .center {

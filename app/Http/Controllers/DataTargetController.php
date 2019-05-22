@@ -14,7 +14,9 @@ class DataTargetController extends Controller
      */
     public function index()
     {
-        //
+        // $dataTestingBatchs = DataTesting::distinct()->get(['batch']);
+
+        return view('datatarget.index');
     }
 
     /**

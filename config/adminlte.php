@@ -123,10 +123,16 @@ return [
 
            [
             'text' => 'Data Target',
-            'url'  => 'admin/data-testing',
+            'url'  => 'admin/data-target',
             'icon' => 'bullseye',
         ],
-        
+
+          [
+            'text' => 'Akurasi',
+            'url'  => 'admin/akurasi',
+            'icon' => 'arrows-h',
+        ],
+  
     ],
 
     /*

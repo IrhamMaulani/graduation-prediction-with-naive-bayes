@@ -14,7 +14,7 @@ class TestingTrialController extends Controller
      */
     public function index()
     {
-        //
+        return view('testingtrial.index');
     }
 
     /**
@@ -25,6 +25,13 @@ class TestingTrialController extends Controller
     public function create()
     {
         //
+    }
+
+    public function toJson()
+    {
+        $testingTrial = TestingTrial::get();
+        
+        return response()->json(['data'=>$testingTrial]);
     }
 
     /**

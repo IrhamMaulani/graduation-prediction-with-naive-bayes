@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\DataTraining;
-use App\TestingTrial;
 use App\Imports\DataTrainingImport;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -16,7 +15,7 @@ class DataTrainingController extends Controller
 
     public function toJson()
     {
-        $dataTraining = DataTraining::with('testingTrial')->get();
+        $dataTraining = DataTraining::get();
         
         return response()->json(['data'=>$dataTraining]);
     }
@@ -42,23 +41,17 @@ class DataTrainingController extends Controller
 
     public function import()
     {
-        $trial = TestingTrial::orderby('created_at', 'desc')->first();
+        $dataTraining = DataTraining::orderby('created_at', 'desc')->first();
 
-        $numberOfTrial = 0;
+        $numberOfBatch = 0;
 
-        if (is_null($trial)) {
-            $numberOfTrial = 1;
+        if (is_null($dataTraining)) {
+            $numberOfBatch = 1;
         } else {
-            $numberOfTrial = $trial->trials + 1;
+            $numberOfBatch = $dataTraining->batch + 1;
         }
 
-        $trialData = new TestingTrial([
-            'trials'    => $numberOfTrial
-        ]);
-
-        $trialData->save();
-
-        Excel::import(new DataTrainingImport($trialData->id), request()->file('file'));
+        Excel::import(new DataTrainingImport($numberOfBatch), request()->file('file'));
            
         return back();
     }

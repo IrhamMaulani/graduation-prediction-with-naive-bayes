@@ -3,12 +3,11 @@
 namespace App\Imports;
 
 use App\Student;
-use App\DataTraining;
-use App\TestingTrial;
+use App\DataTesting;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class DataTrainingImport implements ToModel, WithHeadingRow
+class DataTestingImport implements ToModel, WithHeadingRow
 {
     private $batch;
 
@@ -16,7 +15,6 @@ class DataTrainingImport implements ToModel, WithHeadingRow
     {
         $this->batch = $batch;
     }
-
     /**
     * @param array $row
     *
@@ -24,10 +22,7 @@ class DataTrainingImport implements ToModel, WithHeadingRow
     */
     public function model(array $row)
     {
-        // $trial = TestingTrial::orderby('created_at', 'desc')->first();
-        
-
-        return new DataTraining([
+        return new DataTesting([
              'student_id' => $row['nim'],
             'gender'    => $row['jenis_kelamin'],
             'dwelling_place' => $row['status_tempat_tinggal'],
