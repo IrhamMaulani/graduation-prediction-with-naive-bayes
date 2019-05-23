@@ -17,4 +17,9 @@ class TestingTrial extends Model
     {
         return $this->hasMany('App\DataTraining');
     }
+
+    public function dataTarget()
+    {
+        return $this->hasMany('App\DataTarget');
+    }
 }

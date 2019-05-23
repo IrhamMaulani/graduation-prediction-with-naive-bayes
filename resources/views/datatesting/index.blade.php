@@ -70,7 +70,8 @@
                 <th>Penghasilan Ortu</th>
                  <th>Prediksi Kelulusan</th>
                 <th>Kelulusan</th>
-                <th>Delete Data</th>
+                
+                {{-- <th>Delete Data</th> --}}
 
               </tr>
             </thead>
@@ -205,7 +206,7 @@ $(document).ready(function () {
             { data : 'parents_income' },
             { data : 'prediction_grad_status'},
             { data : 'grad_status' },
-            {"defaultContent": "<button class='btn-block btn btn-danger delete-data center col-centered'>Hapus Data!</button>"}
+            // {"defaultContent": "<button class='btn-block btn btn-danger delete-data center col-centered'>Hapus Data!</button>"}
         ],
         
     } );

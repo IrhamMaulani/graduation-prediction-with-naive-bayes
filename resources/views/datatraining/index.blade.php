@@ -43,7 +43,6 @@
                 <th>Penghasilan Ortu</th>
                 <th>Kelulusan</th>
                 <th>Data Ke -</th>
-                <th>Lihat Data</th>
 
               </tr>
             </thead>
@@ -187,7 +186,7 @@ $(document).ready(function () {
             { data : 'parents_income' },
             { data : 'grad_status' },
             { data : 'batch' },
-            {"defaultContent": "<button class='btn-block btn btn-danger delete-data center col-centered'>Hapus Data!</button>"}
+            // {"defaultContent": "<button class='btn-block btn btn-danger delete-data center col-centered'>Hapus Data!</button>"}
         ],
         
     } );
